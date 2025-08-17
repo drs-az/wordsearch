@@ -6,7 +6,8 @@ A kid-friendly word search game where you tap letters to select/deselect. When y
 - Tap to select/deselect letters; auto-detects correct words from the Word Bank
 - Dynamic Word Bank: found words are replaced with new hidden words
 - Score by word length; progress saves automatically
-- Adjustable grid size, bank size, and difficulty (diagonals/backwards)
+- Fixed 10×10 grid with adjustable bank size and difficulty (diagonals/backwards)
+- Choose from themed word banks: Kid's Words, Harry Potter's World, Star Wars, or Disney Movies
 - Installable PWA with offline support
 
 ## Quick Start
@@ -17,7 +18,7 @@ A kid-friendly word search game where you tap letters to select/deselect. When y
 3. Open `http://localhost:8080` in a browser. Click **Install** to add it to your device.
 
 ## Customize Words
-Edit the `WORD_POOL` in `app.js`. Keep words shorter than or equal to the grid size.
+Edit the lists in `WORD_POOLS` inside `app.js`. Keep words shorter than or equal to the grid size.
 
 ## Notes
 - The selection must exactly match the letters/positions of a word from the active Word Bank.
