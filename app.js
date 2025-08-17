@@ -1,4 +1,4 @@
-// Caleb's Word Search - App
+// Word Search - App
 // PWA-friendly, works offline, saves progress
 
 (function(){
