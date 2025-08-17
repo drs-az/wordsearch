@@ -11,14 +11,35 @@
     allowBackwards: false
   };
 
-  // Kid-friendly word pool (3-7 letters)
-  const WORD_POOL = [
-    'CAT','DOG','BIRD','FROG','LION','BEAR','TIGER','HORSE','SHEEP','GOAT',
-    'FISH','WHALE','SHARK','SNAKE','MOUSE','PANDA','KOALA','OTTER','ZEBRA','EAGLE',
-    'PIZZA','APPLE','BREAD','CHEESE','GRAPE','BERRY','MANGO','PEACH','BANANA','HONEY',
-    'TRAIN','PLANE','TRUCK','ROBOT','SHELL','STONE','CLOUD','RAIN','SUNNY','WIND',
-    'SMILE','HAPPY','LAUGH','HEART','MUSIC','DRUM','PIANO','VIOLA','GUITAR','DANCE'
-  ];
+  const WORD_POOLS = {
+    kids: [
+      'CAT','DOG','BIRD','FROG','LION','BEAR','TIGER','HORSE','SHEEP','GOAT',
+      'FISH','WHALE','SHARK','SNAKE','MOUSE','PANDA','KOALA','OTTER','ZEBRA','EAGLE',
+      'PIZZA','APPLE','BREAD','CHEESE','GRAPE','BERRY','MANGO','PEACH','BANANA','HONEY',
+      'TRAIN','PLANE','TRUCK','ROBOT','SHELL','STONE','CLOUD','RAIN','SUNNY','WIND',
+      'SMILE','HAPPY','LAUGH','HEART','MUSIC','DRUM','PIANO','VIOLA','GUITAR','DANCE'
+    ],
+    harry: [
+      'HOGWARTS','MAGIC','WAND','HERMIONE','RON','DRACO','OWL','SNITCH','POTION','SPELL',
+      'CHAMBER','SEEKER','GOBLIN','HAGRID','VOLDEMORT','PROFESSOR','SCAR','MUGGLE','QUIDDITCH','BASILISK',
+      'FIRE','STONE','DUMBLEDORE','GRYFFINDOR','SLYTHERIN','RAVENCLAW','HUFFLEPUFF','PHOENIX','WEREWOLF','DEMENTOR',
+      'PATRONUS','TRIWIZARD','GOBLET','HORCRUX','BROOM','HOUSE','ELDER'
+    ],
+    starwars: [
+      'JEDI','SITH','FORCE','LIGHTSABER','YODA','LUKE','LEIA','HAN','CHEWBACCA','VADER',
+      'EMPIRE','REBEL','DROID','EWOK','CLONE','STORM','BLASTER','HYPERSPACE','FALCON','TATOOINE',
+      'HOTH','ENDOR','NABOO','PADME','ANAKIN','KYLO','REY','FINN','POE','PALPATINE',
+      'RESIST','GALAXY','ROGUE','SABER','DAGOBAH','MANDALORE','BOBA','JARJAR','GRIEVOUS','CANTINA',
+      'JAWA','BESPIN','WAMPA','TIEFIGHTER','SKYWALKER'
+    ],
+    disney: [
+      'FROZEN','ELSA','ANNA','OLAF','MOANA','MAUI','RAPUNZEL','TIANA','ARIEL','BELLE',
+      'BEAST','ALADDIN','JASMINE','GENIE','MULAN','MUSHU','BAMBI','DUMBO','PINOCCHIO','HERCULES',
+      'MEGARA','HADES','TARZAN','SIMBA','NALA','MUFASA','SCAR','STITCH','LILO','COCO',
+      'MERIDA','BRAVE','FANTASIA','BOLT','BAYMAX','NEMO','DORY','CARS','LIGHTNING','CRUELLA',
+      'PETERPAN','WENDY','TINKERBELL','POCAHONTAS','AURORA','CINDERELLA','GASTON','ARISTOCATS','JUDY','NICK'
+    ]
+  };
 
   // DOM
   const elGrid = document.getElementById('grid');
@@ -30,12 +51,12 @@
   const elClear = document.getElementById('clearBtn');
   const elWin = document.getElementById('winBanner');
 
-  const elGridSize = document.getElementById('gridSize');
   const elBankSize = document.getElementById('bankSize');
   const elDiagonals = document.getElementById('allowDiagonals');
   const elBackwards = document.getElementById('allowBackwards');
-  const elGridSizeLabel = document.getElementById('gridSizeLabel');
   const elBankSizeLabel = document.getElementById('bankSizeLabel');
+  const elWordPool = document.getElementById('wordPool');
+  const elPlayPool = document.getElementById('playPoolBtn');
 
   // State
   let state = null;
@@ -88,22 +109,24 @@
 
   function newGame(){
     const opts = {
-      gridSize: Number(elGridSize?.value || DEFAULTS.gridSize),
+      gridSize: 10,
       bankSize: Number(elBankSize?.value || DEFAULTS.bankSize),
       allowDiagonals: !!elDiagonals?.checked || DEFAULTS.allowDiagonals,
-      allowBackwards: !!elBackwards?.checked || DEFAULTS.allowBackwards
+      allowBackwards: !!elBackwards?.checked || DEFAULTS.allowBackwards,
     };
-    state = createGame(opts);
+    const wordPoolKey = elWordPool?.value || 'kids';
+    state = createGame(opts, wordPoolKey);
     save();
     renderAll();
   }
 
-  function createGame(opts){
+  function createGame(opts, wordPoolKey){
     const size = opts.gridSize;
     const grid = Array.from({length:size}, () => Array.from({length:size}, () => ''));
     const dirs = allowedDirections(opts.allowDiagonals, opts.allowBackwards);
+    const wordPool = WORD_POOLS[wordPoolKey] || WORD_POOLS.kids;
     // Make sure we have enough words that fit
-    const pool = WORD_POOL.filter(w => w.length <= size);
+    const pool = wordPool.filter(w => w.length <= size);
     // Shuffle pool for variety
     const shuffled = [...pool].sort(() => Math.random() - 0.5);
 
@@ -119,7 +142,7 @@
     // Safety: require at least some words
     if (placed.length < 10){
       // If too few placed, relax and retry with diagonals=true/backwards=true for density
-      return createGame({gridSize: size, bankSize: opts.bankSize, allowDiagonals: true, allowBackwards: true});
+      return createGame({gridSize: size, bankSize: opts.bankSize, allowDiagonals: true, allowBackwards: true}, wordPoolKey);
     }
 
     // Fill empty with letters
@@ -135,6 +158,7 @@
 
     return {
       opts,
+      wordPoolKey,
       grid,
       placed,         // array of objects with cells
       active,         // array of words currently shown
@@ -346,17 +370,13 @@
 
   // ---------- Settings ----------
   function applySettingsToUI(){
-    elGridSize.value = state.opts.gridSize;
     elBankSize.value = state.opts.bankSize;
     elDiagonals.checked = state.opts.allowDiagonals;
     elBackwards.checked = state.opts.allowBackwards;
-    elGridSizeLabel.textContent = `${state.opts.gridSize} × ${state.opts.gridSize}`;
     elBankSizeLabel.textContent = `${state.opts.bankSize} words`;
+    if (elWordPool) elWordPool.value = state.wordPoolKey;
   }
 
-  elGridSize.addEventListener('input', () => {
-    elGridSizeLabel.textContent = `${elGridSize.value} × ${elGridSize.value}`;
-  });
   elBankSize.addEventListener('input', () => {
     elBankSizeLabel.textContent = `${elBankSize.value} words`;
   });
@@ -365,6 +385,10 @@
 
   elNewGame.addEventListener('click', () => {
     // Also save settings as defaults for next time
+    newGame();
+  });
+
+  elPlayPool?.addEventListener('click', () => {
     newGame();
   });
 
