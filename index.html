@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <title>Caleb's Word Search</title>
+  <meta name="theme-color" content="#0ea5e9" />
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="title">
+      <span class="app-name">Caleb's Word Search</span>
+      <button id="installBtn" class="install" hidden>Install</button>
+    </div>
+    <div class="stats">
+      <div>Score: <span id="score">0</span></div>
+      <div>Found: <span id="foundCount">0</span>/<span id="totalCount">0</span></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="left-panel">
+      <div class="controls card">
+        <div class="row">
+          <button id="newGameBtn" class="primary">New Game</button>
+          <button id="clearBtn" class="secondary">Clear Selection</button>
+        </div>
+        <details>
+          <summary>Settings</summary>
+          <div class="settings">
+            <label>Grid Size
+              <input type="range" id="gridSize" min="8" max="12" value="10">
+              <span id="gridSizeLabel">10 × 10</span>
+            </label>
+            <label>Word Bank Size
+              <input type="range" id="bankSize" min="4" max="8" value="6">
+              <span id="bankSizeLabel">6 words</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="allowDiagonals" checked>
+              <span>Allow diagonals</span>
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="allowBackwards">
+              <span>Allow backwards</span>
+            </label>
+          </div>
+        </details>
+      </div>
+
+      <div class="card">
+        <h2>Word Bank</h2>
+        <ul id="wordBank" class="word-bank"></ul>
+        <div id="winBanner" class="win" hidden>🎉 Great job! You found them all!</div>
+      </div>
+    </section>
+
+    <section class="grid-panel card">
+      <div id="grid" class="grid" role="grid" aria-label="Word search grid"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>Tip: Tap letters to select/deselect. Find words from the Word Bank.</div>
+    <div><small>Progress saves automatically on this device • Works offline</small></div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(console.error);
+      });
+    }
+
+    // Handle install prompt
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('installBtn');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.hidden = false;
+    });
+    installBtn?.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.hidden = true;
+    });
+  </script>
+</body>
+</html>
