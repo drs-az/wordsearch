@@ -87,12 +87,21 @@ body{
   flex-direction:column;
   gap:.5rem;
   margin-bottom:.5rem;
+  background:#f1f5f9;
+  border:1px solid #e2e8f0;
+  border-radius:.6rem;
+  padding:.75rem;
 }
 .pool-selector select{
   width:100%;
 }
 .pool-selector button{
   width:100%;
+}
+.pool-selector label,
+.pool-selector select,
+.pool-selector button{
+  font-size:1rem;
 }
 
 .grid-panel{display:flex; align-items:center; justify-content:center;}
