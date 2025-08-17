@@ -84,13 +84,15 @@ body{
 
 .grid-panel{display:flex; align-items:center; justify-content:center;}
 .grid{
-  --cell-size: min(7.2vh, 48px);
+  width:100%;
+  max-width:100%;
   display:grid; gap:6px;
-  grid-template-columns: repeat(var(--grid-size), var(--cell-size));
-  grid-template-rows: repeat(var(--grid-size), var(--cell-size));
+  grid-template-columns: repeat(var(--grid-size), 1fr);
   touch-action: manipulation;
 }
 .cell{
+  aspect-ratio:1;
+  width:100%;
   display:flex; align-items:center; justify-content:center;
   background:#ffffff; border:1px solid #e5e7eb; border-radius:.6rem;
   user-select:none; -webkit-user-select:none;
