@@ -1,4 +1,4 @@
-# Caleb's Word Search — PWA
+# Word Search — PWA
 
 A kid-friendly word search game where you tap letters to select/deselect. When you find a word in the **Word Bank**, it’s removed, you score points, and a new word (also hidden in the grid) replaces it. The app installs to your device and works offline.
 
