@@ -76,6 +76,8 @@
     // load from storage or create new
     const saved = load();
     if (saved){
+      // Drop any persisted letter selections so hidden leftovers don't block matches
+      saved.selected = [];
       state = saved;
       applySettingsToUI();
       renderAll();
