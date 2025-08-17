@@ -1,5 +1,5 @@
-// Simple cache-first service worker for Caleb's Word Search
-const CACHE_NAME = 'caleb-ws-v1';
+// Simple cache-first service worker for Word Search
+const CACHE_NAME = 'ws-v1';
 const ASSETS = [
   './',
   './index.html',
