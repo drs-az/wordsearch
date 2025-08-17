@@ -7,7 +7,7 @@ A kid-friendly word search game where you tap letters to select/deselect. When y
 - Dynamic Word Bank: found words are replaced with new hidden words
 - Score by word length; progress saves automatically
 - Fixed 10×10 grid with adjustable bank size and difficulty (diagonals/backwards)
-- Choose from themed word banks: Kid's Words, Harry Potter's World, Star Wars, or Disney Movies
+- Choose from themed word banks: Kid's Words, Harry Potter's World, Star Wars, Disney Movies, Rebecca Yarros Characters, Sarah J. Maas Characters, or the Marvel Universe
 - Installable PWA with offline support
 
 ## Quick Start
